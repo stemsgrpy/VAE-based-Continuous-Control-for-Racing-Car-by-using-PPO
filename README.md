@@ -71,8 +71,9 @@ python PPO.py --retrain --env CarRacing-v0 --model_path out/CarRacing-v0-runx/ch
 
 ## Result
 
-![](/README/CarRacing-v0.gif)
-
+<p align="center">
+  <img src="/README/CarRacing-v0.gif" alt="Description" width="600" height="480" border="0" />
+</p>
 <p align="center">
   Figure 3: Reinforcement Learning PPO on Racing Car
 </p>
