@@ -1,16 +1,51 @@
 # VAE-based-Continuous-Control-for-Racing-Car-by-using-PPO
 
 ## Dataset
-- Record images through **playing Racing by yourself**     
+- Record images through **playing Racing Car by yourself**     
+  - Tips     
+    - Decrease straight (by accelerating)     
+    - Increase curve    (by decelerating)     
+    - Casually play     (data diversity)     
+
 ```
     python record_data.py
 ```
 
 ## Variational AutoEncoder VAE
-- Encoder  
-  - Mean, Standard deviation (Gaussian distribution)    
-- Decoder   
-- KL Divergence   
+
+- **Simple VAE**
+
+```
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Linear-1              [-1, 72, 400]       3,686,800
+            Linear-2               [-1, 72, 20]           8,020
+            Linear-3               [-1, 72, 20]           8,020
+            Linear-4              [-1, 72, 400]           8,400
+            Linear-5             [-1, 72, 9216]       3,695,616
+================================================================
+```
+
+- Complex VAE  
+
+```
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Linear-1            [-1, 72, 10000]      92,170,000
+            Linear-2             [-1, 72, 4096]      40,964,096
+            Linear-3             [-1, 72, 2048]       8,390,656
+            Linear-4              [-1, 72, 512]       1,049,088
+            Linear-5               [-1, 72, 64]          32,832
+            Linear-6               [-1, 72, 64]          32,832
+            Linear-7              [-1, 72, 512]          33,280
+            Linear-8             [-1, 72, 2048]       1,050,624
+            Linear-9             [-1, 72, 4096]       8,392,704
+           Linear-10            [-1, 72, 10000]      40,970,000
+           Linear-11             [-1, 72, 9216]      92,169,216
+================================================================
+```
 
 ### Train
 ```
@@ -30,20 +65,56 @@
 ```
     python vae.py --test
 ```
+
 <p align="center">
-  <img src="/README/ImageSource.jpg" alt="Description" width="120" height="120" border="0" />
-  <img src="/README/ImageSource.jpg" alt="Description" width="120" height="120" border="0" />
+  <img src="/README/ImageSource0.jpg" alt="Description" width="100" height="100" border="0" />
+  <img src="/README/ImageSource1.jpg" alt="Description" width="100" README="100" border="0" />
+  <img src="/README/ImageSource2.jpg" alt="Description" width="100" README="100" border="0" />
+  <img src="/README/ImageSource3.jpg" alt="Description" width="100" height="100" border="0" />
+  <img src="/README/ImageSource4.jpg" alt="Description" width="100" README="100" border="0" />
+  <img src="/README/ImageSource5.jpg" alt="Description" width="100" height="100" border="0" />
+  <img src="/README/ImageSource6.jpg" alt="Description" width="100" height="100" border="0" />
+  <img src="/README/ImageSource7.jpg" alt="Description" width="100" height="100" border="0" />
 </p>
 <p align="center">
-  Figure 2: VAE Testing
+  Figure 2: Image Source 
+</p>
+
+<p align="center">
+  <img src="/README/image_test0.png" alt="Description" width="100" height="100" border="0" />
+  <img src="/README/image_test1.png" alt="Description" width="100" README="100" border="0" />
+  <img src="/README/image_test2.png" alt="Description" width="100" README="100" border="0" />
+  <img src="/README/image_test3.png" alt="Description" width="100" height="100" border="0" />
+  <img src="/README/image_test4.png" alt="Description" width="100" README="100" border="0" />
+  <img src="/README/image_test5.png" alt="Description" width="100" height="100" border="0" />
+  <img src="/README/image_test6.png" alt="Description" width="100" README="100" border="0" />
+  <img src="/README/image_test7.png" alt="Description" width="100" height="100" border="0" />
+</p>
+<p align="center">
+  Figure 3: Simple VAE Testing 
+</p>
+
+<p align="center">
+  <img src="/README/image_test0d.png" alt="Description" width="100" height="100" border="0" />
+  <img src="/README/image_test1d.png" alt="Description" width="100" README="100" border="0" />
+  <img src="/README/image_test2d.png" alt="Description" width="100" README="100" border="0" />
+  <img src="/README/image_test3d.png" alt="Description" width="100" height="100" border="0" />
+  <img src="/README/image_test4d.png" alt="Description" width="100" README="100" border="0" />
+  <img src="/README/image_test5d.png" alt="Description" width="100" height="100" border="0" />
+  <img src="/README/image_test6d.png" alt="Description" width="100" README="100" border="0" />
+  <img src="/README/image_test7d.png" alt="Description" width="100" height="100" border="0" />
+</p>
+<p align="center">
+  Figure 3: Complex VAE Testing 
 </p>
 
 ## Input to Output
 - State (Input)  
-  - **Use pre-trained model VAE**
-    - **Only Encoder part**  
+  - **Simple VAE is sufficient for feature extraction**  
+    - **Use pre-trained Simple VAE model**  
+      - **Only Encoder part**  
 ```
-    config.state_dim = 20 # Encoder Feature
+    config.state_dim = 20 # Encoder Feature # 64
 ```
 
 - Action (Output)  

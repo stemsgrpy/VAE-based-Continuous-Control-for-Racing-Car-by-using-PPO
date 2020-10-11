@@ -12,8 +12,9 @@ from torchvision.utils import save_image
 from model import VAE
 import PIL.Image as Image
 from dataset import RacingCarDataset
+from core.logger import TensorBoardLogger
 
-num_epochs = 3001
+num_epochs = 1001   # 300
 batch_size = 72
 learning_rate = 1e-4
 
@@ -51,10 +52,19 @@ if __name__ == '__main__':
 
     if not os.path.exists('./VAE_training'):
         os.mkdir('./VAE_training')
-        
+
+    board_logger = TensorBoardLogger('./VAE_training')
+
     model = VAE()
     if torch.cuda.is_available():
         model.cuda()
+
+    '''
+    from torchsummary import summary
+    vae = VAE().cuda()
+    summary(vae, (batch_size, 96*96))
+    exit()
+    '''
 
     if args.train:
         dataset = RacingCarDataset('./RacingCarDataset', transform=img_transform) # RacingCarDataset
@@ -64,6 +74,7 @@ if __name__ == '__main__':
 
         optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
+        t = 0
         for epoch in range(num_epochs):
             model.train()
             train_loss = 0
@@ -87,39 +98,45 @@ if __name__ == '__main__':
                 optimizer.step()
 
                 if batch_idx % 100 == 0:
-                    print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                    board_logger.scalar_summary('Epoch Loss', t, loss.item() / len(img))
+                    print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}\t{}'.format(
                         epoch,
                         batch_idx * len(img),
                         len(dataloader.dataset), 100. * batch_idx / len(dataloader),
-                        loss.item() / len(img)))
+                        loss.item() / len(img), t))
+                    t += 1
 
+            board_logger.scalar_summary('Epoch Average tLoss', epoch, train_loss / len(dataloader.dataset))
             print('====> Epoch: {} Average loss: {:.4f}'.format(
                 epoch, train_loss / len(dataloader.dataset)))
             if epoch % 100 == 0:
                 save = to_img(recon_batch.cpu().data)
                 save_image(save, './VAE_training/image_{}.png'.format(epoch))
+                torch.save(model.state_dict(), './vae'+str(epoch)+'.pth')
 
-        torch.save(model.state_dict(), './vae'+str(epoch)+'.pth')
+        torch.save(model.state_dict(), './vae.pth')
 
     elif args.test:
         policy = torch.load('./vae.pth')
         model.load_state_dict(policy)
 
-        img = Image.open('./README/ImageSource.jpg')
-        img = img_transform(img)
+        for _ in range(8):
+            img = Image.open('./README/ImageSource'+str(_)+'.jpg')
+            # img = Image.open('./RacingCarDataset_/history143.jpg')
+            img = img_transform(img)
 
-        img = img.view(img.size(0), -1)
-        # img = Variable(img)
+            img = img.view(img.size(0), -1)
+            # img = Variable(img)
 
-        if torch.cuda.is_available():
-            img = img.cuda()
+            if torch.cuda.is_available():
+                img = img.cuda()
 
-        recon_batch, z, mu, logvar = model(img)
-        feature = z.squeeze(0).cpu().detach().numpy()
+            recon_batch, z, mu, logvar = model(img)
+            feature = z.squeeze(0).cpu().detach().numpy()
 
-        print(feature, feature.shape)
- 
-        save = to_img(recon_batch.cpu().data)
-        save_image(save, './VAE_training/image_{}.png'.format('test'))
+            print(feature, feature.shape)
+    
+            save = to_img(recon_batch.cpu().data)
+            save_image(save, './VAE_training/image_{}.png'.format('test'+str(_)))
 
         
