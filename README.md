@@ -105,7 +105,7 @@
   <img src="/README/image_test7d.png" alt="Description" width="100" height="100" border="0" />
 </p>
 <p align="center">
-  Figure 3: Complex VAE Testing 
+  Figure 4: Complex VAE Testing 
 </p>
 
 ## Input to Output
@@ -127,7 +127,6 @@
 ### Train
 ```
 python PPO.py --train --env CarRacing-v0
-
 ```
 
 ### Test
@@ -146,7 +145,7 @@ python PPO.py --retrain --env CarRacing-v0 --model_path out/CarRacing-v0-runx/ch
   <img src="/README/CarRacing-v0.gif" alt="Description" width="600" height="480" border="0" />
 </p>
 <p align="center">
-  Figure 3: Reinforcement Learning PPO on Racing Car
+  Figure 5: Reinforcement Learning PPO on Racing Car
 </p>
 
 ## Reference
