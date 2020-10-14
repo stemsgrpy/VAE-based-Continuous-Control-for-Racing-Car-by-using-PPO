@@ -20,8 +20,8 @@ class PPO:
         # self.buffer = ReplayBuffer(self.config.max_buff)
         self.buffer = ReplayBuffer()
 
-        self.policy = ActorCritic(self.config.state_dim, self.config.action_dim, self.config.action_std, self.config.action_type)
-        self.policy_old = ActorCritic(self.config.state_dim, self.config.action_dim, self.config.action_std, self.config.action_type)
+        self.policy = ActorCritic(self.config.state_dim, self.config.action_dim)
+        self.policy_old = ActorCritic(self.config.state_dim, self.config.action_dim)
         self.policy_old.load_state_dict(self.policy.state_dict())
         self.optimizer = Adam(self.policy.parameters(), lr=self.config.learning_rate, betas=self.config.betas)
 
@@ -189,10 +189,12 @@ if __name__ == '__main__':
 
     agent = PPO(config)
 
-    model = VAE()
+    VAEmode = 'Simple' # Complex
+
+    model = VAE(VAEmode)
     if torch.cuda.is_available():
         model.cuda()
-    policy = torch.load('./vae.pth')
+    policy = torch.load('./vae_'+VAEmode+'.pth')
     model.load_state_dict(policy)
 
     if args.train:

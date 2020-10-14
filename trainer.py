@@ -4,6 +4,7 @@ from config import Config
 from core.logger import TensorBoardLogger
 from core.util import get_output_folder
 
+import torch
 from torchvision.utils import save_image
 from torchvision import transforms
 import PIL.Image as Image
@@ -28,17 +29,17 @@ class Trainer:
         self.model = model
         self.SaveImage = False
 
-        '''
         # VAE test 
-        img = Image.open('README/ImageSource.jpg')
-        img = img_transform(img)
-        img = img.view(img.size(0), -1)
+        for _ in range(8):
+            img = Image.open('./README/ImageSource'+str(_)+'.jpg')
+            img = img_transform(img)
+            img = img.view(img.size(0), -1)
 
-        img = img.cuda()
-        recon_batch, z, mu, logvar = self.model(img)
-        save = to_img(recon_batch.cpu().data)
-        save_image(save, './image_{}.jpg'.format('ImageVAE'))
-        '''
+            if torch.cuda.is_available():
+                img = img.cuda()
+            recon_batch, z, mu, logvar = self.model(img)
+            save = to_img(recon_batch.cpu().data)
+            save_image(save, './VAE_training/image_{}.png'.format('ImageVAE'+str(_)))
         
         self.outputdir = get_output_folder(self.config.output, self.config.env)
         self.agent.save_config(self.outputdir)
@@ -70,7 +71,6 @@ class Trainer:
         for fr in range(pre_fr + 1, self.config.frames + 1):
             self.env.render()
 
-            #JJ
             action = self.agent.act(state)
             action = action.clip(self.env.action_space.low, self.env.action_space.high)
 

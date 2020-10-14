@@ -53,9 +53,10 @@ if __name__ == '__main__':
     if not os.path.exists('./VAE_training'):
         os.mkdir('./VAE_training')
 
+    VAEmode = 'Simple' # Complex
     board_logger = TensorBoardLogger('./VAE_training')
 
-    model = VAE()
+    model = VAE(VAEmode)
     if torch.cuda.is_available():
         model.cuda()
 
@@ -114,10 +115,10 @@ if __name__ == '__main__':
                 save_image(save, './VAE_training/image_{}.png'.format(epoch))
                 torch.save(model.state_dict(), './vae'+str(epoch)+'.pth')
 
-        torch.save(model.state_dict(), './vae.pth')
+        torch.save(model.state_dict(), './vae_'+VAEmode+'.pth')
 
     elif args.test:
-        policy = torch.load('./vae.pth')
+        policy = torch.load('./vae_'+VAEmode+'.pth')
         model.load_state_dict(policy)
 
         for _ in range(8):

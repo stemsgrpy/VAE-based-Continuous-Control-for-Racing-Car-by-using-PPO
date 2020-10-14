@@ -13,7 +13,7 @@
 
 ## Variational AutoEncoder VAE
 
-- **Simple VAE**
+- **Simple VAE** (set `VAEmode='Simple'` in `vae.py`)  
 
 ```
 ----------------------------------------------------------------
@@ -27,7 +27,7 @@
 ================================================================
 ```
 
-- Complex VAE  
+- Complex VAE (set `VAEmode='Complex'` in `vae.py`)    
 
 ```
 ----------------------------------------------------------------
@@ -111,6 +111,7 @@
 ## Input to Output
 - State (Input)  
   - **Simple VAE is sufficient for feature extraction**  
+  (set `VAEmode='Simple'` in `PPO.py`)  
     - **Use pre-trained Simple VAE model**  
       - **Only Encoder part**  
 ```

@@ -25,17 +25,17 @@ class Tester(object):
 
         self.model = model
 
-        '''
         # VAE test 
-        img = Image.open('README/ImageSource.jpg')
-        img = img_transform(img)
-        img = img.view(img.size(0), -1)
+        for _ in range(8):
+            img = Image.open('./README/ImageSource'+str(_)+'.jpg')
+            img = img_transform(img)
+            img = img.view(img.size(0), -1)
 
-        img = img.cuda()
-        recon_batch, z, mu, logvar = self.model(img)
-        save = to_img(recon_batch.cpu().data)
-        save_image(save, './image_{}.jpg'.format('ImageVAE'))
-        '''
+            if torch.cuda.is_available():
+                img = img.cuda()
+            recon_batch, z, mu, logvar = self.model(img)
+            save = to_img(recon_batch.cpu().data)
+            save_image(save, './VAE_training/image_{}.png'.format('ImageVAE'+str(_)))
 
         self.agent.is_training = False
         self.agent.load_weights(model_path)
